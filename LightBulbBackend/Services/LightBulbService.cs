@@ -11,40 +11,43 @@ namespace LightBulbBackend.Services
     {
         public Results Calculate(int numOfPeople, int bulbs)
         {
-            bool[] numOfBulbs = new bool[bulbs + 1]; 
+                bool[] numOfBulbs = new bool[bulbs + 1];
+                List<int> list = new List<int>();
+                double bulbNumber = 0;
 
-
-            for (int i = 1; i <= numOfPeople; i++)
-            {
-                for (int j = i; j < numOfBulbs.Length; j = j + i)
+                if (numOfPeople >= bulbs)
                 {
-                    if ((j % i) == 0)
+                    for (int i = 1; i < numOfBulbs.Length; i++)
                     {
-                        numOfBulbs[j] = !numOfBulbs[j];
+                        bulbNumber = Math.Pow(i, 2);
+                        if (bulbNumber <= numOfBulbs.Length - 1)
+                            list.Add(int.Parse(bulbNumber.ToString()));
+                        else
+                            break;
                     }
                 }
-            }
-
-            int numOfBulbsOn = 0;
-            List<int> list = new List<int>();
-
-            for (int i = 1; i < numOfBulbs.Length; i++)
-            {
-                if (numOfBulbs[i])
+                else
                 {
-                    numOfBulbsOn++;
-                    list.Add(i);
+
+                    for (int i = 1; i <= numOfPeople; i++)
+                    {
+                        for (int j = i; j < numOfBulbs.Length; j = j + i)
+                        {
+                            numOfBulbs[j] = !numOfBulbs[j];
+                            if (numOfBulbs[j])
+                                list.Add(j);
+                            else
+                                list.Remove(j);
+                        }
+
+                    }
                 }
-            }
 
-
-            Results results = new Results
-            {
-                NumberOfBulbsOn = numOfBulbsOn,
-                BulbNumbers = list                
-            };
-
-            return results;
+                return new Results
+                {
+                    NumberOfBulbsOn = list.Count(),
+                    BulbNumbers = list
+                };
         }
     }
 }
